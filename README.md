@@ -34,3 +34,9 @@ A neon sci-fi arcade shooter made with Flutter and Dart.
 - Keyboard: WASD or arrows to move; P or Esc to pause; R to restart.
 - Mouse/touch: drag to move horizontally.
 - Weapons fire automatically.
+
+## Documentation
+
+Full project documentation is available in [DOCUMENTATION.md](DOCUMENTATION.md). It covers the game's features, controls, architecture, level progression, collision rules, local setup, deployment, testing checklist, known limitations, and future improvements.
+
+**Play the game:** https://rohith0605.github.io/cyber_strike_v1_2_source/
