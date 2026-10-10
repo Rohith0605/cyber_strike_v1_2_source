@@ -3,6 +3,9 @@
 A neon sci-fi arcade shooter made with Flutter and Dart.
 
 ## What's new in v1.2
+- A layered deep-space battlefield with level-tinted nebulae, parallax star streaks, a subdued perspective grid, and an asteroid field in later sectors.
+- A more detailed, banking player fighter, distinct armored enemy finishes, brighter weapon trails, pickup auras, and layered impact particles.
+- Hull impacts and heavy target destruction now add restrained screen shake; active weapon and shield timers are visible in the HUD.
 - **Health only decreases on a direct enemy/ship collision.** Enemies that pass the bottom of the screen are removed without causing damage.
 - A short post-hit grace period prevents unfair rapid chain-damage; the ship flashes while temporarily protected.
 - Keyboard support using modern Flutter `KeyboardListener`/`KeyEvent` handling.

@@ -24,6 +24,7 @@ class CyberStrikeApp extends StatelessWidget {
 }
 
 enum EnemyKind { scout, interceptor, tank, phantom }
+
 enum PickupKind { twinLaser, spreadShot, rapidFire, shield }
 
 class Enemy {
@@ -44,7 +45,8 @@ class Bullet {
   final Offset velocity;
   final double radius;
   bool dead = false;
-  Bullet(this.position, {this.velocity = const Offset(0, -10), this.radius = 3});
+  Bullet(this.position,
+      {this.velocity = const Offset(0, -10), this.radius = 3});
 }
 
 class Pickup {
@@ -72,7 +74,8 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   final math.Random _random = math.Random();
-  final FocusNode _keyboardFocus = FocusNode(debugLabel: 'Cyber Strike controls');
+  final FocusNode _keyboardFocus =
+      FocusNode(debugLabel: 'Cyber Strike controls');
   final List<Enemy> _enemies = [];
   final List<Bullet> _bullets = [];
   final List<Pickup> _pickups = [];
@@ -92,6 +95,9 @@ class _GameScreenState extends State<GameScreen> {
   int _weaponTicks = 0;
   int _shieldTicks = 0;
   int _damageCooldown = 0;
+  int _shakeTicks = 0;
+  double _playerTilt = 0;
+  double _targetPlayerTilt = 0;
   String _notice = '';
   int _noticeTicks = 0;
 
@@ -131,6 +137,9 @@ class _GameScreenState extends State<GameScreen> {
       _weaponTicks = 0;
       _shieldTicks = 0;
       _damageCooldown = 0;
+      _shakeTicks = 0;
+      _playerTilt = 0;
+      _targetPlayerTilt = 0;
       _notice = 'MISSION START';
       _noticeTicks = 100;
       _gameOver = false;
@@ -172,31 +181,41 @@ class _GameScreenState extends State<GameScreen> {
     } else if (_weaponTier == 3) {
       _bullets
         ..add(Bullet(Offset(x, y), radius: 3.5))
-        ..add(Bullet(Offset(x - 5, y), velocity: const Offset(-2.4, -9.2), radius: 3))
-        ..add(Bullet(Offset(x + 5, y), velocity: const Offset(2.4, -9.2), radius: 3));
+        ..add(Bullet(Offset(x - 5, y),
+            velocity: const Offset(-2.4, -9.2), radius: 3))
+        ..add(Bullet(Offset(x + 5, y),
+            velocity: const Offset(2.4, -9.2), radius: 3));
     } else {
       _bullets
         ..add(Bullet(Offset(x - 10, y), radius: 3.5))
         ..add(Bullet(Offset(x, y - 5), radius: 4.2))
         ..add(Bullet(Offset(x + 10, y), radius: 3.5))
-        ..add(Bullet(Offset(x - 4, y), velocity: const Offset(-3.5, -9.0), radius: 3))
-        ..add(Bullet(Offset(x + 4, y), velocity: const Offset(3.5, -9.0), radius: 3));
+        ..add(Bullet(Offset(x - 4, y),
+            velocity: const Offset(-3.5, -9.0), radius: 3))
+        ..add(Bullet(Offset(x + 4, y),
+            velocity: const Offset(3.5, -9.0), radius: 3));
     }
   }
 
   void _spawnEnemy() {
-    final x = 24.0 + _random.nextDouble() * math.max(1.0, _size.width - 48.0).toDouble();
+    final x = 24.0 +
+        _random.nextDouble() * math.max(1.0, _size.width - 48.0).toDouble();
     EnemyKind kind;
     if (_level == 1) {
       kind = EnemyKind.scout;
     } else if (_level == 2) {
-      kind = _random.nextDouble() < .65 ? EnemyKind.interceptor : EnemyKind.scout;
+      kind =
+          _random.nextDouble() < .65 ? EnemyKind.interceptor : EnemyKind.scout;
     } else if (_level == 3) {
       final r = _random.nextDouble();
-      kind = r < .45 ? EnemyKind.interceptor : (r < .78 ? EnemyKind.tank : EnemyKind.scout);
+      kind = r < .45
+          ? EnemyKind.interceptor
+          : (r < .78 ? EnemyKind.tank : EnemyKind.scout);
     } else {
       final r = _random.nextDouble();
-      kind = r < .30 ? EnemyKind.phantom : (r < .62 ? EnemyKind.tank : EnemyKind.interceptor);
+      kind = r < .30
+          ? EnemyKind.phantom
+          : (r < .62 ? EnemyKind.tank : EnemyKind.interceptor);
     }
     final radius = switch (kind) {
       EnemyKind.scout => 14.0,
@@ -229,7 +248,11 @@ class _GameScreenState extends State<GameScreen> {
     ];
     final kind = available[_random.nextInt(available.length)];
     _pickups.add(Pickup(
-      Offset(22.0 + _random.nextDouble() * math.max(1.0, _size.width - 44.0).toDouble(), -25.0),
+      Offset(
+          22.0 +
+              _random.nextDouble() *
+                  math.max(1.0, _size.width - 44.0).toDouble(),
+          -25.0),
       kind,
       1.8 + _random.nextDouble() * .8,
     ));
@@ -263,7 +286,6 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
-
   KeyEventResult _handleKeyEvent(KeyEvent event) {
     // React to presses and OS key-repeat, not key-release events.
     if (event is KeyUpEvent) return KeyEventResult.ignored;
@@ -284,15 +306,13 @@ class _GameScreenState extends State<GameScreen> {
       _startGame();
       return KeyEventResult.handled;
     }
-    if (key == LogicalKeyboardKey.keyP ||
-        key == LogicalKeyboardKey.escape) {
+    if (key == LogicalKeyboardKey.keyP || key == LogicalKeyboardKey.escape) {
       setState(() => _paused = !_paused);
       return KeyEventResult.handled;
     }
 
     if (_paused) {
-      if (key == LogicalKeyboardKey.enter ||
-          key == LogicalKeyboardKey.space) {
+      if (key == LogicalKeyboardKey.enter || key == LogicalKeyboardKey.space) {
         setState(() => _paused = false);
         return KeyEventResult.handled;
       }
@@ -303,11 +323,14 @@ class _GameScreenState extends State<GameScreen> {
     double dy = 0;
     if (key == LogicalKeyboardKey.arrowLeft || key == LogicalKeyboardKey.keyA) {
       dx = -24;
-    } else if (key == LogicalKeyboardKey.arrowRight || key == LogicalKeyboardKey.keyD) {
+    } else if (key == LogicalKeyboardKey.arrowRight ||
+        key == LogicalKeyboardKey.keyD) {
       dx = 24;
-    } else if (key == LogicalKeyboardKey.arrowUp || key == LogicalKeyboardKey.keyW) {
+    } else if (key == LogicalKeyboardKey.arrowUp ||
+        key == LogicalKeyboardKey.keyW) {
       dy = -19;
-    } else if (key == LogicalKeyboardKey.arrowDown || key == LogicalKeyboardKey.keyS) {
+    } else if (key == LogicalKeyboardKey.arrowDown ||
+        key == LogicalKeyboardKey.keyS) {
       dy = 19;
     }
 
@@ -332,6 +355,7 @@ class _GameScreenState extends State<GameScreen> {
 
     var dx = (right ? 1.0 : 0.0) - (left ? 1.0 : 0.0);
     var dy = (down ? 1.0 : 0.0) - (up ? 1.0 : 0.0);
+    _targetPlayerTilt = dx * .22;
     if (dx == 0 && dy == 0) return;
 
     // Normalize diagonal movement so it is not faster than horizontal movement.
@@ -342,10 +366,12 @@ class _GameScreenState extends State<GameScreen> {
     const speedPerFrame = 5.2;
     _player = Offset(
       (_player.dx + dx * speedPerFrame / _size.width)
-          .clamp(.055, .945).toDouble(),
+          .clamp(.055, .945)
+          .toDouble(),
       // Keep the ship below the HUD and above the status/control area.
       (_player.dy + dy * speedPerFrame / _size.height)
-          .clamp(.16, .88).toDouble(),
+          .clamp(.16, .88)
+          .toDouble(),
     );
   }
 
@@ -354,6 +380,8 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       _frame++;
       _applyKeyboardMovement();
+      _playerTilt += (_targetPlayerTilt - _playerTilt) * .22;
+      if (_shakeTicks > 0) _shakeTicks--;
       final previousLevel = _level;
       _level = _levelForScore(_score);
       if (_level > previousLevel) {
@@ -363,7 +391,8 @@ class _GameScreenState extends State<GameScreen> {
           _ => 'LEVEL 4  •  PHANTOM FLEET',
         });
         _burst(Offset(_size.width / 2, _size.height * .35),
-            const Color(0xFF00F5FF), count: 28);
+            const Color(0xFF00F5FF),
+            count: 28);
       }
 
       if (_noticeTicks > 0) _noticeTicks--;
@@ -378,7 +407,8 @@ class _GameScreenState extends State<GameScreen> {
       if (_damageCooldown > 0) _damageCooldown--;
       if (_shootCooldown > 0) _shootCooldown--;
       if (_shootCooldown == 0) {
-        final playerPx = Offset(_player.dx * _size.width, _player.dy * _size.height);
+        final playerPx =
+            Offset(_player.dx * _size.width, _player.dy * _size.height);
         _fire(playerPx);
         _shootCooldown = _weaponTier == 4 ? 5 : (_weaponTier == 3 ? 8 : 11);
       }
@@ -400,11 +430,14 @@ class _GameScreenState extends State<GameScreen> {
         );
       }
 
-      final playerPx = Offset(_player.dx * _size.width, _player.dy * _size.height);
+      final playerPx =
+          Offset(_player.dx * _size.width, _player.dy * _size.height);
       for (final enemy in _enemies) {
         for (final bullet in _bullets) {
-          if (!bullet.dead && !enemy.dead &&
-              (enemy.position - bullet.position).distance < enemy.radius + bullet.radius) {
+          if (!bullet.dead &&
+              !enemy.dead &&
+              (enemy.position - bullet.position).distance <
+                  enemy.radius + bullet.radius) {
             bullet.dead = true;
             enemy.hp--;
             _burst(bullet.position, const Color(0xFF00F5FF), count: 4);
@@ -417,19 +450,25 @@ class _GameScreenState extends State<GameScreen> {
                 EnemyKind.phantom => 30,
               };
               _burst(enemy.position, _enemyColor(enemy.kind));
+              if (enemy.kind == EnemyKind.tank) {
+                _shakeTicks = math.max(_shakeTicks, 5);
+              }
             }
           }
         }
         // Hull damage can ONLY happen on an actual enemy/ship collision.
         // Enemies that escape off-screen are removed without hurting the player.
-        if (!enemy.dead && (enemy.position - playerPx).distance < enemy.radius + 17) {
+        if (!enemy.dead &&
+            (enemy.position - playerPx).distance < enemy.radius + 17) {
           enemy.dead = true;
           if (_shieldTicks > 0) {
             _shieldTicks = math.max(0, _shieldTicks - 80).toInt();
             _burst(playerPx, const Color(0xFF62FFB5), count: 16);
           } else if (_damageCooldown == 0) {
             _health = math.max(0, _health - 1);
-            _damageCooldown = 55; // Brief hit grace period prevents unfair chain damage.
+            _damageCooldown =
+                55; // Brief hit grace period prevents unfair chain damage.
+            _shakeTicks = 12;
             _burst(playerPx, const Color(0xFFFF4D9D), count: 24);
             _announce('HULL IMPACT');
           } else {
@@ -444,7 +483,8 @@ class _GameScreenState extends State<GameScreen> {
       _bullets.removeWhere((b) => b.dead);
 
       for (final pickup in _pickups) {
-        pickup.position = Offset(pickup.position.dx, pickup.position.dy + pickup.speed);
+        pickup.position =
+            Offset(pickup.position.dx, pickup.position.dy + pickup.speed);
         pickup.spin += .07;
         if ((pickup.position - playerPx).distance < 29) {
           pickup.dead = true;
@@ -477,7 +517,10 @@ class _GameScreenState extends State<GameScreen> {
   void _movePlayer(Offset local) {
     if (_size == Size.zero) return;
     setState(() {
-      _player = Offset((local.dx / _size.width).clamp(.06, .94).toDouble(), .82);
+      _targetPlayerTilt =
+          (local.dx / _size.width - _player.dx).clamp(-.3, .3) * 1.8;
+      _player =
+          Offset((local.dx / _size.width).clamp(.06, .94).toDouble(), .82);
     });
   }
 
@@ -491,176 +534,230 @@ class _GameScreenState extends State<GameScreen> {
               autofocus: true,
               onKeyEvent: _handleKeyEvent,
               child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onPanDown: (d) {
-                if (_running && !_paused) _movePlayer(d.localPosition);
-              },
-              onPanUpdate: (d) {
-                if (_running && !_paused) _movePlayer(d.localPosition);
-              },
-              child: Stack(children: [
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: GamePainter(
-                      enemies: _enemies,
-                      bullets: _bullets,
-                      pickups: _pickups,
-                      particles: _particles,
-                      player: _player,
-                      frame: _frame,
-                      running: _running,
-                      shieldActive: _shieldTicks > 0,
-                      invulnerable: _damageCooldown > 0,
-                      weaponTier: _weaponTier,
+                behavior: HitTestBehavior.opaque,
+                onPanDown: (d) {
+                  if (_running && !_paused) _movePlayer(d.localPosition);
+                },
+                onPanUpdate: (d) {
+                  if (_running && !_paused) _movePlayer(d.localPosition);
+                },
+                child: Stack(children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: GamePainter(
+                        enemies: _enemies,
+                        bullets: _bullets,
+                        pickups: _pickups,
+                        particles: _particles,
+                        player: _player,
+                        frame: _frame,
+                        running: _running,
+                        shieldActive: _shieldTicks > 0,
+                        invulnerable: _damageCooldown > 0,
+                        weaponTier: _weaponTier,
+                        level: _level,
+                        playerTilt: _playerTilt,
+                        shakeTicks: _shakeTicks,
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  left: 12, right: 12, top: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xE8172640), Color(0xD90B1124)],
-                        begin: Alignment.topLeft, end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: const Color(0x6658F4FF)),
-                      boxShadow: const [
-                        BoxShadow(color: Color(0x1900EFFF), blurRadius: 22, spreadRadius: 1),
-                      ],
-                    ),
-                    child: Row(children: [
-                      Container(
-                        width: 32, height: 32,
-                        decoration: BoxDecoration(
-                          color: const Color(0x2200F5FF),
-                          borderRadius: BorderRadius.circular(9),
-                          border: Border.all(color: const Color(0x6600F5FF)),
+                  Positioned(
+                    left: 12,
+                    right: 12,
+                    top: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 13, vertical: 10),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xE8172640), Color(0xD90B1124)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        child: const Icon(Icons.bolt_rounded,
-                          color: Color(0xFF00F5FF), size: 21),
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(color: const Color(0x6658F4FF)),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Color(0x1900EFFF),
+                              blurRadius: 22,
+                              spreadRadius: 1),
+                        ],
                       ),
-                      const SizedBox(width: 9),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
+                      child: Row(children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: const Color(0x2200F5FF),
+                            borderRadius: BorderRadius.circular(9),
+                            border: Border.all(color: const Color(0x6600F5FF)),
+                          ),
+                          child: const Icon(Icons.bolt_rounded,
+                              color: Color(0xFF00F5FF), size: 21),
+                        ),
+                        const SizedBox(width: 9),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('CYBER STRIKE',
+                                  style: TextStyle(
+                                      letterSpacing: 1.7,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 11)),
+                              SizedBox(height: 2),
+                              Text('NEBULA DEFENSE SYSTEMS',
+                                  style: TextStyle(
+                                      color: Color(0xFF8098B9),
+                                      letterSpacing: 1.1,
+                                      fontSize: 7,
+                                      fontWeight: FontWeight.w700)),
+                            ],
+                          ),
+                        ),
+                        _chip('LVL $_level'),
+                        const SizedBox(width: 6),
+                        _chip('$_score PTS'),
+                      ]),
+                    ),
+                  ),
+                  if (_running)
+                    Positioned(
+                      left: 18,
+                      right: 68,
+                      top: 68,
+                      child: Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Text('CYBER STRIKE', style: TextStyle(
-                              letterSpacing: 1.7, fontWeight: FontWeight.w900, fontSize: 11)),
-                            SizedBox(height: 2),
-                            Text('NEBULA DEFENSE SYSTEMS',
-                              style: TextStyle(color: Color(0xFF8098B9),
-                                letterSpacing: 1.1, fontSize: 7, fontWeight: FontWeight.w700)),
-                          ],
+                            Row(mainAxisSize: MainAxisSize.min, children: [
+                              ...List.generate(
+                                  3,
+                                  (i) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 4),
+                                        child: Icon(
+                                            i < _health
+                                                ? Icons.favorite
+                                                : Icons.favorite_border,
+                                            size: 17,
+                                            color: i < _health
+                                                ? const Color(0xFFFF2BD6)
+                                                : Colors.white24),
+                                      )),
+                            ]),
+                            if (_weaponTier > 1)
+                              _chip(switch (_weaponTier) {
+                                2 => 'TWIN LASER',
+                                3 => 'SPREAD SHOT',
+                                _ => 'OVERDRIVE',
+                              }),
+                            if (_weaponTicks > 0) ...[
+                              const SizedBox(width: 5),
+                              _chip('${(_weaponTicks / 60).ceil()}s'),
+                            ],
+                            if (_shieldTicks > 0) ...[
+                              _chip('SHIELD ${(_shieldTicks / 60).ceil()}s'),
+                            ],
+                          ]),
+                    ),
+                  if (_running)
+                    Positioned(
+                      left: 16,
+                      right: 68,
+                      top: 95,
+                      child: _levelProgress(),
+                    ),
+                  if (_running && !_paused)
+                    Positioned(
+                        right: 14,
+                        top: 61,
+                        child: IconButton.filledTonal(
+                          onPressed: () => setState(() => _paused = true),
+                          icon: const Icon(Icons.pause_rounded),
+                          style: IconButton.styleFrom(
+                            backgroundColor: const Color(0x3322E6F2),
+                            foregroundColor: const Color(0xFF00F5FF),
+                          ),
+                        )),
+                  if (_noticeTicks > 0 && _running && !_paused)
+                    Positioned(
+                      left: 12,
+                      right: 12,
+                      top: 132,
+                      child: IgnorePointer(
+                        child: Text(_notice,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xFF8EFFFF),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 2,
+                              shadows: [
+                                Shadow(color: Color(0xFF00F5FF), blurRadius: 12)
+                              ],
+                            )),
+                      ),
+                    ),
+                  if (!_running)
+                    _overlay(
+                      title: _gameOver ? 'SHIP DESTROYED' : 'READY, PILOT?',
+                      subtitle: _gameOver
+                          ? 'Final score: $_score  •  Level $_level'
+                          : 'Survive the swarm. Collect weapon drops. Own the void.',
+                      button: _gameOver ? 'REDEPLOY' : 'START MISSION',
+                      onPressed: _startGame,
+                    ),
+                  if (_paused)
+                    _overlay(
+                      title: 'MISSION PAUSED',
+                      subtitle: 'Threats temporarily suspended.',
+                      button: 'RESUME',
+                      onPressed: () => setState(() => _paused = false),
+                      secondary: 'RESTART',
+                      onSecondary: _startGame,
+                    ),
+                  if (_running && !_paused)
+                    Positioned(
+                      bottom: 14,
+                      left: 0,
+                      right: 0,
+                      child: IgnorePointer(
+                          child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 15),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 9),
+                        decoration: BoxDecoration(
+                          color: const Color(0xB30B1124),
+                          border: Border.all(color: const Color(0x3325E8F2)),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      _chip('LVL $_level'),
-                      const SizedBox(width: 6),
-                      _chip('$_score PTS'),
-                    ]),
-                  ),
-                ),
-                Positioned(
-                  left: 18, top: 52,
-                  child: Row(children: [
-                    ...List.generate(3, (i) => Padding(
-                      padding: const EdgeInsets.only(right: 4),
-                      child: Icon(i < _health ? Icons.favorite : Icons.favorite_border,
-                        size: 17, color: i < _health
-                          ? const Color(0xFFFF2BD6) : Colors.white24),
-                    )),
-                    const SizedBox(width: 10),
-                    if (_weaponTier > 1)
-                      _chip(switch (_weaponTier) {
-                        2 => 'TWIN LASER',
-                        3 => 'SPREAD SHOT',
-                        _ => 'OVERDRIVE',
-                      }),
-                    if (_shieldTicks > 0) ...[
-                      const SizedBox(width: 5),
-                      _chip('SHIELD'),
-                    ],
-                  ]),
-                ),
-                if (_running)
-                  Positioned(
-                    left: 16, right: 68, top: 82,
-                    child: _levelProgress(),
-                  ),
-                if (_running && !_paused)
-                  Positioned(right: 14, top: 45,
-                    child: IconButton.filledTonal(
-                      onPressed: () => setState(() => _paused = true),
-                      icon: const Icon(Icons.pause_rounded),
-                      style: IconButton.styleFrom(
-                        backgroundColor: const Color(0x3322E6F2),
-                        foregroundColor: const Color(0xFF00F5FF),
-                      ),
-                    )),
-                if (_noticeTicks > 0 && _running && !_paused)
-                  Positioned(
-                    left: 12, right: 12, top: 122,
-                    child: IgnorePointer(child: Text(_notice,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Color(0xFF8EFFFF), fontSize: 11,
-                        fontWeight: FontWeight.w900, letterSpacing: 2,
-                        shadows: [Shadow(color: Color(0xFF00F5FF), blurRadius: 12)],
+                        child: const Text(
+                          'MOVE  WASD / ARROWS     •     AUTO-FIRE     •     P / ESC PAUSE',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Color(0xFF8EA6C8),
+                              letterSpacing: 1.0,
+                              fontSize: 8,
+                              fontWeight: FontWeight.bold),
+                        ),
                       )),
                     ),
-                  ),
-                if (!_running)
-                  _overlay(
-                    title: _gameOver ? 'SHIP DESTROYED' : 'READY, PILOT?',
-                    subtitle: _gameOver
-                        ? 'Final score: $_score  •  Level $_level'
-                        : 'Survive the swarm. Collect weapon drops. Own the void.',
-                    button: _gameOver ? 'REDEPLOY' : 'START MISSION',
-                    onPressed: _startGame,
-                  ),
-                if (_paused)
-                  _overlay(
-                    title: 'MISSION PAUSED',
-                    subtitle: 'Threats temporarily suspended.',
-                    button: 'RESUME',
-                    onPressed: () => setState(() => _paused = false),
-                    secondary: 'RESTART',
-                    onSecondary: _startGame,
-                  ),
-                if (_running && !_paused)
-                  Positioned(
-                    bottom: 14, left: 0, right: 0,
-                    child: IgnorePointer(child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 15),
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                      decoration: BoxDecoration(
-                        color: const Color(0xB30B1124),
-                        border: Border.all(color: const Color(0x3325E8F2)),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        'MOVE  WASD / ARROWS     •     AUTO-FIRE     •     P / ESC PAUSE',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Color(0xFF8EA6C8),
-                          letterSpacing: 1.0, fontSize: 8, fontWeight: FontWeight.bold),
-                      ),
-                    )),
-                  ),
-              ]),
+                ]),
               ),
             );
           }),
         ),
       );
 
-
   Widget _levelProgress() {
     final currentFloor = switch (_level) { 1 => 0, 2 => 20, 3 => 50, _ => 100 };
     final nextGoal = switch (_level) { 1 => 20, 2 => 50, 3 => 100, _ => 150 };
-    final progress = (( _score - currentFloor) / (nextGoal - currentFloor))
-        .clamp(0.0, 1.0).toDouble();
+    final progress = ((_score - currentFloor) / (nextGoal - currentFloor))
+        .clamp(0.0, 1.0)
+        .toDouble();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
@@ -670,8 +767,11 @@ class _GameScreenState extends State<GameScreen> {
       ),
       child: Row(children: [
         Text(_level >= 4 ? 'OVERDRIVE' : 'NEXT LVL',
-          style: const TextStyle(color: Color(0xFF87A4C9),
-            fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1)),
+            style: const TextStyle(
+                color: Color(0xFF87A4C9),
+                fontSize: 8,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1)),
         const SizedBox(width: 8),
         Expanded(
           child: ClipRRect(
@@ -680,14 +780,17 @@ class _GameScreenState extends State<GameScreen> {
               value: _level >= 4 ? 1 : progress,
               minHeight: 4,
               backgroundColor: const Color(0xFF25314A),
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00F5FF)),
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(Color(0xFF00F5FF)),
             ),
           ),
         ),
         const SizedBox(width: 8),
         Text(_level >= 4 ? 'MAX' : '$_score / $nextGoal',
-          style: const TextStyle(color: Color(0xFFB9F9FF),
-            fontSize: 8, fontWeight: FontWeight.w800)),
+            style: const TextStyle(
+                color: Color(0xFFB9F9FF),
+                fontSize: 8,
+                fontWeight: FontWeight.w800)),
       ]),
     );
   }
@@ -699,9 +802,12 @@ class _GameScreenState extends State<GameScreen> {
           border: Border.all(color: const Color(0x5549EAF2)),
           borderRadius: BorderRadius.circular(7),
         ),
-        child: Text(label, style: const TextStyle(
-          color: Color(0xFFB9F9FF), fontSize: 9,
-          fontWeight: FontWeight.w800, letterSpacing: .8)),
+        child: Text(label,
+            style: const TextStyle(
+                color: Color(0xFFB9F9FF),
+                fontSize: 9,
+                fontWeight: FontWeight.w800,
+                letterSpacing: .8)),
       );
 
   Widget _overlay({
@@ -711,10 +817,12 @@ class _GameScreenState extends State<GameScreen> {
     required VoidCallback onPressed,
     String? secondary,
     VoidCallback? onSecondary,
-  }) => Positioned.fill(
+  }) =>
+      Positioned.fill(
         child: Container(
           color: const Color(0xCC050816),
-          child: Center(child: Padding(
+          child: Center(
+              child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Container(
               width: 430,
@@ -723,30 +831,42 @@ class _GameScreenState extends State<GameScreen> {
                 color: const Color(0xEE0B1124),
                 borderRadius: BorderRadius.circular(22),
                 border: Border.all(color: const Color(0x9900F5FF)),
-                boxShadow: const [BoxShadow(
-                  color: Color(0x3300F5FF), blurRadius: 35, spreadRadius: 2)],
+                boxShadow: const [
+                  BoxShadow(
+                      color: Color(0x3300F5FF), blurRadius: 35, spreadRadius: 2)
+                ],
               ),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                   decoration: BoxDecoration(
                     color: const Color(0x2200F5FF),
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(color: const Color(0x6655F6FF)),
                   ),
                   child: const Text('SECTOR 09  /  LIVE COMBAT',
-                    style: TextStyle(color: Color(0xFF70F8FF),
-                      fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                      style: TextStyle(
+                          color: Color(0xFF70F8FF),
+                          fontSize: 9,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2)),
                 ),
                 const SizedBox(height: 18),
                 const Icon(Icons.rocket_launch_rounded,
-                  size: 47, color: Color(0xFF00F5FF)),
+                    size: 47, color: Color(0xFF00F5FF)),
                 const SizedBox(height: 16),
-                Text(title, textAlign: TextAlign.center, style: const TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                Text(title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 2)),
                 const SizedBox(height: 12),
-                Text(subtitle, textAlign: TextAlign.center, style: const TextStyle(
-                  color: Color(0xFF9AAAC7), height: 1.5, fontSize: 13)),
+                Text(subtitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Color(0xFF9AAAC7), height: 1.5, fontSize: 13)),
                 const SizedBox(height: 18),
                 Container(
                   width: double.infinity,
@@ -758,39 +878,51 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   child: const Column(children: [
                     Text('FLIGHT CONTROLS',
-                      style: TextStyle(color: Color(0xFF8EA6C8),
-                        fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.8)),
+                        style: TextStyle(
+                            color: Color(0xFF8EA6C8),
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.8)),
                     SizedBox(height: 8),
-                    Text('WASD / ARROWS  •  MOVE\nP / ESC  •  PAUSE    R  •  RESTART',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xFFCCDAEF),
-                        fontSize: 10, height: 1.7, fontWeight: FontWeight.w700)),
+                    Text(
+                        'WASD / ARROWS  •  MOVE\nP / ESC  •  PAUSE    R  •  RESTART',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Color(0xFFCCDAEF),
+                            fontSize: 10,
+                            height: 1.7,
+                            fontWeight: FontWeight.w700)),
                   ]),
                 ),
                 const SizedBox(height: 20),
-                SizedBox(width: double.infinity, height: 48,
-                  child: FilledButton(
-                    onPressed: onPressed,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF00DDE8),
-                      foregroundColor: const Color(0xFF04101C),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    ),
-                    child: Text(button, style: const TextStyle(
-                      fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-                  )),
+                SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: FilledButton(
+                      onPressed: onPressed,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF00DDE8),
+                        foregroundColor: const Color(0xFF04101C),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      ),
+                      child: Text(button,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                    )),
                 if (secondary != null) ...[
                   const SizedBox(height: 10),
-                  SizedBox(width: double.infinity, height: 44,
-                    child: OutlinedButton(
-                      onPressed: onSecondary,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFFF62DF),
-                        side: const BorderSide(color: Color(0x88FF2BD6))),
-                      child: Text(secondary,
-                        style: const TextStyle(letterSpacing: 1.5)),
-                    )),
+                  SizedBox(
+                      width: double.infinity,
+                      height: 44,
+                      child: OutlinedButton(
+                        onPressed: onSecondary,
+                        style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFFFF62DF),
+                            side: const BorderSide(color: Color(0x88FF2BD6))),
+                        child: Text(secondary,
+                            style: const TextStyle(letterSpacing: 1.5)),
+                      )),
                 ],
               ]),
             ),
@@ -810,6 +942,9 @@ class GamePainter extends CustomPainter {
   final bool shieldActive;
   final bool invulnerable;
   final int weaponTier;
+  final int level;
+  final double playerTilt;
+  final int shakeTicks;
 
   GamePainter({
     required this.enemies,
@@ -822,41 +957,126 @@ class GamePainter extends CustomPainter {
     required this.shieldActive,
     required this.invulnerable,
     required this.weaponTier,
+    required this.level,
+    required this.playerTilt,
+    required this.shakeTicks,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final bg = Paint()..shader = const LinearGradient(
-      begin: Alignment.topCenter, end: Alignment.bottomCenter,
-      colors: [Color(0xFF080D24), Color(0xFF050816), Color(0xFF10051E)],
-    ).createShader(Offset.zero & size);
+    final atmosphere = switch (level) {
+      1 => const Color(0xFF102A47),
+      2 => const Color(0xFF391B55),
+      3 => const Color(0xFF3B2449),
+      _ => const Color(0xFF541F35),
+    };
+    final bg = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Color(0xFF080D20), Color(0xFF050816), Color(0xFF090817)],
+      ).createShader(Offset.zero & size);
     canvas.drawRect(Offset.zero & size, bg);
 
-    final grid = Paint()..color = const Color(0x1400EFFF)..strokeWidth = .7;
-    for (double y = 0; y < size.height; y += 44) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), grid);
-    }
-    for (double x = 0; x < size.width; x += 44) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), grid);
-    }
+    final nebulaPaint = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          atmosphere.withValues(alpha: .22),
+          atmosphere.withValues(alpha: 0)
+        ],
+      ).createShader(Rect.fromCircle(
+        center: Offset(size.width * .74, size.height * .32),
+        radius: size.width * .7,
+      ));
+    canvas.drawRect(Offset.zero & size, nebulaPaint);
+    final secondaryNebula = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          const Color(0xFF00BFD1).withValues(alpha: .09),
+          const Color(0xFF00BFD1).withValues(alpha: 0),
+        ],
+      ).createShader(Rect.fromCircle(
+        center: Offset(size.width * .12, size.height * .68),
+        radius: size.width * .54,
+      ));
+    canvas.drawRect(Offset.zero & size, secondaryNebula);
+
     final rng = math.Random(42);
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 118; i++) {
       final x = rng.nextDouble() * size.width;
-      final y = (rng.nextDouble() * size.height + frame * (.4 + (i % 4) * .17)) % size.height;
-      canvas.drawCircle(Offset(x, y), i % 10 == 0 ? 1.6 : .8,
-        Paint()..color = Colors.white.withValues(alpha: .24 + (i % 4) * .12));
+      final baseY = rng.nextDouble() * size.height;
+      final depth = .18 + (i % 5) * .13;
+      final y = (baseY + frame * depth) % size.height;
+      final radius = i % 13 == 0 ? 1.7 : .65 + (i % 3) * .18;
+      final alpha = .2 + (i % 4) * .12;
+      final starColor =
+          i % 9 == 0 ? const Color(0xFFFFC8E9) : const Color(0xFFC7EEFF);
+      canvas.drawCircle(Offset(x, y), radius,
+          Paint()..color = starColor.withValues(alpha: alpha));
+      if (i % 13 == 0) {
+        final streak = Paint()
+          ..color = starColor.withValues(alpha: .22)
+          ..strokeWidth = .7
+          ..strokeCap = StrokeCap.round;
+        canvas.drawLine(Offset(x, y), Offset(x, y + 7 + depth * 15), streak);
+      }
     }
 
+    final grid = Paint()
+      ..color = const Color(0x0A67DDEA)
+      ..strokeWidth = .7;
+    final horizon = size.height * .52;
+    for (int i = -7; i <= 7; i++) {
+      final bottomX = size.width / 2 + i * size.width / 7;
+      canvas.drawLine(
+          Offset(size.width / 2, horizon), Offset(bottomX, size.height), grid);
+    }
+    for (int i = 1; i <= 5; i++) {
+      final progress = ((i * .17 + frame * .0012) % 1);
+      final y = horizon + progress * progress * (size.height - horizon);
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), grid);
+    }
+
+    if (level >= 3) {
+      for (int i = 0; i < 5; i++) {
+        final x = ((i * 137.0 + 58) % size.width);
+        final y = (size.height * (.22 + (i % 3) * .22) +
+                frame * (.22 + (i % 2) * .12)) %
+            size.height;
+        _drawAsteroid(canvas, Offset(x, y), 8.0 + (i % 3) * 3.5, i);
+      }
+    }
+
+    canvas.save();
+    if (shakeTicks > 0) {
+      final intensity = shakeTicks / 12;
+      canvas.translate(
+        math.sin(frame * 2.7) * 4 * intensity,
+        math.cos(frame * 3.1) * 3 * intensity,
+      );
+    }
     for (final b in bullets) {
+      final color = weaponTier >= 4
+          ? const Color(0xFFFFB347)
+          : b.velocity.dx.abs() > 1.0
+              ? const Color(0xFFFF65D6)
+              : const Color(0xFF55F5FF);
       final p = Paint()
-        ..color = (weaponTier >= 4
-            ? const Color(0xFFFFB347)
-            : const Color(0xFF00F5FF))
+        ..color = color
         ..strokeWidth = b.radius
         ..strokeCap = StrokeCap.round;
+      canvas.drawLine(
+          b.position,
+          b.position - b.velocity * 2.2,
+          Paint()
+            ..color = color.withValues(alpha: .22)
+            ..strokeWidth = b.radius * 2.8
+            ..strokeCap = StrokeCap.round);
       canvas.drawLine(b.position, b.position - b.velocity * 1.5, p);
-      canvas.drawCircle(b.position, b.radius + 2,
-        Paint()..color = p.color.withValues(alpha: .18));
+      canvas.drawCircle(b.position, b.radius + 1,
+          Paint()..color = Colors.white.withValues(alpha: .8));
+      canvas.drawCircle(b.position, b.radius + 4,
+          Paint()..color = color.withValues(alpha: .18));
     }
 
     for (final e in enemies) {
@@ -867,8 +1087,8 @@ class GamePainter extends CustomPainter {
         EnemyKind.tank => const Color(0xFFFF654A),
         EnemyKind.phantom => const Color(0xFFFFD166),
       };
-      canvas.drawCircle(p, e.radius + 8,
-        Paint()..color = color.withValues(alpha: .12));
+      canvas.drawCircle(
+          p, e.radius + 8, Paint()..color = color.withValues(alpha: .12));
       final path = Path();
       switch (e.kind) {
         case EnemyKind.scout:
@@ -910,20 +1130,74 @@ class GamePainter extends CustomPainter {
             ..close();
           break;
       }
-      canvas.drawPath(path, Paint()..color = color);
-      canvas.drawPath(path, Paint()
-        ..style = PaintingStyle.stroke..strokeWidth = 1.5
-        ..color = Colors.white.withValues(alpha: .85));
-      canvas.drawCircle(p, e.kind == EnemyKind.tank ? 5 : 3,
-        Paint()..color = const Color(0xFF160D29));
+      final opacity = e.kind == EnemyKind.phantom && frame % 12 < 3 ? .42 : 1.0;
+      canvas.drawPath(
+          path,
+          Paint()
+            ..shader = LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                color.withValues(alpha: opacity),
+                const Color(0xFF17192C)
+              ],
+            ).createShader(Rect.fromCircle(center: p, radius: e.radius)));
+      final detailPaint = Paint()
+        ..color = color.withValues(alpha: .85)
+        ..strokeWidth = 1.4
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+      if (e.kind == EnemyKind.interceptor) {
+        for (final side in [-1.0, 1.0]) {
+          final wing = Path()
+            ..moveTo(p.dx + side * e.radius * .45, p.dy - 2)
+            ..lineTo(p.dx + side * e.radius * 1.22, p.dy + 4)
+            ..lineTo(p.dx + side * e.radius * .58, p.dy + e.radius * .72);
+          canvas.drawPath(wing, detailPaint);
+        }
+      } else if (e.kind == EnemyKind.tank) {
+        final plate = Paint()
+          ..color = const Color(0xFFFFB49E).withValues(alpha: .62)
+          ..strokeWidth = 1.2
+          ..style = PaintingStyle.stroke;
+        canvas.drawLine(Offset(p.dx - e.radius * .48, p.dy - e.radius * .46),
+            Offset(p.dx + e.radius * .48, p.dy - e.radius * .46), plate);
+        canvas.drawLine(Offset(p.dx - e.radius * .56, p.dy + e.radius * .34),
+            Offset(p.dx + e.radius * .56, p.dy + e.radius * .34), plate);
+      }
+      final cockpit = Rect.fromCenter(
+        center: Offset(p.dx, p.dy - e.radius * .12),
+        width: e.kind == EnemyKind.tank ? 8 : 5,
+        height: e.kind == EnemyKind.tank ? 10 : 8,
+      );
+      canvas.drawOval(cockpit, Paint()..color = const Color(0xFF101528));
+      canvas.drawOval(
+          cockpit.deflate(1.5), Paint()..color = color.withValues(alpha: .95));
+      canvas.drawPath(
+          path,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1.5
+            ..color = Colors.white.withValues(alpha: .85));
+      for (final side in [-1.0, 1.0]) {
+        final engine =
+            Offset(p.dx + side * e.radius * .43, p.dy + e.radius * .48);
+        canvas.drawCircle(engine, e.kind == EnemyKind.tank ? 3 : 2.2,
+            Paint()..color = const Color(0xFFFF9B5E).withValues(alpha: .8));
+      }
       if (e.hp > 1) {
         final barWidth = e.radius * 1.5;
-        final rect = Rect.fromLTWH(p.dx - barWidth / 2, p.dy - e.radius - 7, barWidth, 3);
-        canvas.drawRRect(RRect.fromRectAndRadius(rect, const Radius.circular(2)),
-          Paint()..color = Colors.white24);
-        canvas.drawRRect(RRect.fromRectAndRadius(
-          Rect.fromLTWH(rect.left, rect.top, barWidth * (e.hp / (e.kind == EnemyKind.tank ? 4 : 3)), 3),
-          const Radius.circular(2)), Paint()..color = color);
+        final rect = Rect.fromLTWH(
+            p.dx - barWidth / 2, p.dy - e.radius - 7, barWidth, 3);
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(rect, const Radius.circular(2)),
+            Paint()..color = Colors.white24);
+        canvas.drawRRect(
+            RRect.fromRectAndRadius(
+                Rect.fromLTWH(rect.left, rect.top,
+                    barWidth * (e.hp / (e.kind == EnemyKind.tank ? 4 : 3)), 3),
+                const Radius.circular(2)),
+            Paint()..color = color);
       }
     }
 
@@ -935,15 +1209,33 @@ class GamePainter extends CustomPainter {
         PickupKind.rapidFire => const Color(0xFFFFB347),
         PickupKind.shield => const Color(0xFF62FFB5),
       };
-      canvas.drawCircle(p, 19, Paint()..color = color.withValues(alpha: .13));
+      final pulse = 19 + math.sin(frame * .12 + pickup.spin) * 2;
+      canvas.drawCircle(
+          p, pulse + 5, Paint()..color = color.withValues(alpha: .055));
+      canvas.drawCircle(
+          p, pulse, Paint()..color = color.withValues(alpha: .15));
       canvas.save();
       canvas.translate(p.dx, p.dy);
       canvas.rotate(pickup.spin);
       final diamond = Path()
-        ..moveTo(0, -13)..lineTo(13, 0)..lineTo(0, 13)..lineTo(-13, 0)..close();
-      canvas.drawPath(diamond, Paint()..color = color);
-      canvas.drawPath(diamond, Paint()
-        ..style = PaintingStyle.stroke..strokeWidth = 2..color = Colors.white);
+        ..moveTo(0, -13)
+        ..lineTo(13, 0)
+        ..lineTo(0, 13)
+        ..lineTo(-13, 0)
+        ..close();
+      canvas.drawPath(diamond, Paint()..color = const Color(0xFF10192B));
+      canvas.drawPath(
+          diamond,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2.5
+            ..color = color);
+      canvas.drawPath(
+          diamond,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2
+            ..color = Colors.white);
       canvas.restore();
       final label = switch (pickup.kind) {
         PickupKind.twinLaser => 'II',
@@ -952,78 +1244,216 @@ class GamePainter extends CustomPainter {
         PickupKind.shield => '+',
       };
       final tp = TextPainter(
-        text: TextSpan(text: label, style: const TextStyle(
-          color: Color(0xFF07101D), fontSize: 11, fontWeight: FontWeight.w900)),
+        text: TextSpan(
+            text: label,
+            style: const TextStyle(
+                color: Color(0xFF07101D),
+                fontSize: 11,
+                fontWeight: FontWeight.w900)),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas, Offset(p.dx - tp.width / 2, p.dy - tp.height / 2));
     }
 
     for (final particle in particles) {
-      canvas.drawCircle(particle.position, math.max(1.0, particle.life / 7),
-        Paint()..color = particle.color.withValues(alpha: (particle.life / 36).clamp(0.0, 1.0)));
+      final radius = math.max(1.0, particle.life / 7);
+      final fade = (particle.life / 36).clamp(0.0, 1.0);
+      canvas.drawCircle(particle.position, radius + 2,
+          Paint()..color = particle.color.withValues(alpha: fade * .16));
+      canvas.drawCircle(particle.position, radius,
+          Paint()..color = particle.color.withValues(alpha: fade));
+      canvas.drawCircle(particle.position, radius * .35,
+          Paint()..color = Colors.white.withValues(alpha: fade * .8));
     }
 
     if (running && (!invulnerable || frame % 8 < 5)) {
       final p = Offset(player.dx * size.width, player.dy * size.height);
-      final flamePath = Path()
-        ..moveTo(p.dx - 8, p.dy + 13)
-        ..lineTo(p.dx, p.dy + 31 + (frame % 4) * 2)
-        ..lineTo(p.dx + 8, p.dy + 13)
-        ..close();
-      canvas.drawPath(flamePath, Paint()..color = const Color(0xFFFF8A36));
-      canvas.drawPath(flamePath, Paint()..color = const Color(0xFFFFD166).withValues(alpha: .7)
-        ..style = PaintingStyle.stroke..strokeWidth = 1.2);
-
       if (shieldActive) {
-        canvas.drawCircle(p, 32, Paint()
-          ..color = const Color(0xFF62FFB5).withValues(alpha: .10));
-        canvas.drawCircle(p, 29, Paint()
-          ..style = PaintingStyle.stroke..strokeWidth = 2
-          ..color = const Color(0xFF62FFB5).withValues(alpha: .8));
-        canvas.drawArc(Rect.fromCircle(center: p, radius: 34),
-          frame * .04, math.pi * 1.2, false,
-          Paint()..style = PaintingStyle.stroke..strokeWidth = 2
-            ..color = const Color(0xFFB5FFE0));
+        canvas.drawCircle(p, 32,
+            Paint()..color = const Color(0xFF62FFB5).withValues(alpha: .10));
+        canvas.drawCircle(
+            p,
+            29,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2
+              ..color = const Color(0xFF62FFB5).withValues(alpha: .8));
+        canvas.drawArc(
+            Rect.fromCircle(center: p, radius: 34),
+            frame * .04,
+            math.pi * 1.2,
+            false,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2
+              ..color = const Color(0xFFB5FFE0));
       }
 
-      // Sharper, layered fighter silhouette with wing fins, cockpit, and engine glow.
-      final wing = Path()
-        ..moveTo(p.dx, p.dy - 27)
-        ..lineTo(p.dx + 24, p.dy + 13)
-        ..lineTo(p.dx + 10, p.dy + 9)
-        ..lineTo(p.dx + 7, p.dy + 18)
-        ..lineTo(p.dx, p.dy + 13)
-        ..lineTo(p.dx - 7, p.dy + 18)
-        ..lineTo(p.dx - 10, p.dy + 9)
-        ..lineTo(p.dx - 24, p.dy + 13)
-        ..close();
-      canvas.drawCircle(p, 28, Paint()..color = const Color(0x2200F5FF));
-      canvas.drawPath(wing, Paint()..shader = const LinearGradient(
-        colors: [Color(0xFFFFFFFF), Color(0xFF61F8FF), Color(0xFF1475CF)],
-        begin: Alignment.topCenter, end: Alignment.bottomCenter,
-      ).createShader(Rect.fromCenter(center: p, width: 50, height: 50)));
-      canvas.drawPath(wing, Paint()
-        ..style = PaintingStyle.stroke..strokeWidth = 1.7
-        ..color = const Color(0xFFD9FFFF));
-      final centerHull = Path()
-        ..moveTo(p.dx, p.dy - 28)
-        ..lineTo(p.dx + 7, p.dy + 7)
-        ..lineTo(p.dx, p.dy + 14)
-        ..lineTo(p.dx - 7, p.dy + 7)
-        ..close();
-      canvas.drawPath(centerHull, Paint()..color = const Color(0xFF087CBA));
-      canvas.drawOval(Rect.fromCenter(center: Offset(p.dx, p.dy - 7),
-        width: 7, height: 13), Paint()..color = const Color(0xFFFFFFFF));
-      canvas.drawCircle(Offset(p.dx, p.dy - 7), 2,
-        Paint()..color = const Color(0xFF00F5FF));
-      if (weaponTier >= 2) {
-        for (final dx in [-10.0, 10.0]) {
-          canvas.drawCircle(Offset(p.dx + dx, p.dy + 8), 3,
-            Paint()..color = const Color(0xFF00F5FF));
-        }
+      canvas.save();
+      canvas.translate(p.dx, p.dy);
+      canvas.rotate(playerTilt);
+      _drawPlayerShip(canvas, frame, weaponTier);
+      canvas.restore();
+    }
+    canvas.restore();
+  }
+
+  void _drawPlayerShip(Canvas canvas, int frame, int weaponTier) {
+    final flameLength = 20 + (frame % 5) * 2.4;
+    final flame = Path()
+      ..moveTo(-12, 10)
+      ..lineTo(-7, 18)
+      ..lineTo(0, 18 + flameLength)
+      ..lineTo(7, 18)
+      ..lineTo(12, 10)
+      ..close();
+    canvas.drawPath(
+        flame, Paint()..color = const Color(0xFFFF713E).withValues(alpha: .3));
+    final coreFlame = Path()
+      ..moveTo(-5, 13)
+      ..lineTo(0, 18 + flameLength * .7)
+      ..lineTo(5, 13)
+      ..close();
+    canvas.drawPath(coreFlame, Paint()..color = const Color(0xFFFFA65C));
+    canvas.drawPath(coreFlame,
+        Paint()..color = const Color(0xFFFFF2C2).withValues(alpha: .75));
+
+    final wing = Path()
+      ..moveTo(0, -31)
+      ..lineTo(8, -19)
+      ..lineTo(29, 11)
+      ..lineTo(25, 17)
+      ..lineTo(10, 12)
+      ..lineTo(7, 22)
+      ..lineTo(0, 17)
+      ..lineTo(-7, 22)
+      ..lineTo(-10, 12)
+      ..lineTo(-25, 17)
+      ..lineTo(-29, 11)
+      ..lineTo(-8, -19)
+      ..close();
+    canvas.drawPath(wing, Paint()..color = const Color(0xFF15314D));
+    canvas.drawPath(
+        wing,
+        Paint()
+          ..shader = const LinearGradient(
+            colors: [Color(0xFFB9F8FF), Color(0xFF3C91C3), Color(0xFF18334E)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ).createShader(const Rect.fromLTWH(-30, -32, 60, 56)));
+    canvas.drawPath(
+        wing,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..color = const Color(0xFFC8F9FF));
+
+    final armor = Paint()
+      ..color = const Color(0xFF70DDF0).withValues(alpha: .85)
+      ..strokeWidth = 1.4
+      ..strokeCap = StrokeCap.round;
+    for (final side in [-1.0, 1.0]) {
+      final panel = Path()
+        ..moveTo(side * 9, -9)
+        ..lineTo(side * 23, 10)
+        ..lineTo(side * 12, 7);
+      canvas.drawPath(panel, Paint()..color = const Color(0xFF286184));
+      canvas.drawPath(
+          panel,
+          Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1
+            ..color = const Color(0xFF9CEBFA));
+      canvas.drawLine(Offset(side * 12, 2), Offset(side * 17, 8), armor);
+    }
+    final hull = Path()
+      ..moveTo(0, -34)
+      ..lineTo(7, -13)
+      ..lineTo(6, 13)
+      ..lineTo(0, 21)
+      ..lineTo(-6, 13)
+      ..lineTo(-7, -13)
+      ..close();
+    canvas.drawPath(hull, Paint()..color = const Color(0xFF142E48));
+    canvas.drawPath(
+        hull,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4
+          ..color = const Color(0xFFE1FCFF));
+    canvas.drawPath(
+        Path()
+          ..moveTo(0, -27)
+          ..lineTo(0, 13),
+        Paint()
+          ..color = const Color(0xFF53D8F0)
+          ..strokeWidth = 1.2);
+    final canopy = Path()
+      ..moveTo(0, -23)
+      ..quadraticBezierTo(6, -13, 4, -2)
+      ..lineTo(0, 2)
+      ..lineTo(-4, -2)
+      ..quadraticBezierTo(-6, -13, 0, -23)
+      ..close();
+    canvas.drawPath(canopy, Paint()..color = const Color(0xFF061727));
+    canvas.drawPath(
+        canopy,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1
+          ..color = const Color(0xFF72F7FF));
+    canvas.drawLine(
+        const Offset(-2, -12),
+        const Offset(1, -18),
+        Paint()
+          ..color = Colors.white.withValues(alpha: .85)
+          ..strokeWidth = 1.5);
+
+    for (final x in [-19.0, 19.0]) {
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              Rect.fromCenter(center: Offset(x, 12), width: 5, height: 8),
+              const Radius.circular(2)),
+          Paint()..color = const Color(0xFF071622));
+      canvas.drawCircle(
+          Offset(x, 11), 1.8, Paint()..color = const Color(0xFF71F7FF));
+    }
+    if (weaponTier >= 2) {
+      for (final x in [-10.0, 10.0]) {
+        canvas.drawCircle(Offset(x, 7), 3.4,
+            Paint()..color = const Color(0xFFFF53D6).withValues(alpha: .22));
+        canvas.drawCircle(
+            Offset(x, 7), 2, Paint()..color = const Color(0xFF6CFAFF));
       }
     }
+  }
+
+  void _drawAsteroid(Canvas canvas, Offset center, double radius, int seed) {
+    final points = 7 + seed % 3;
+    final path = Path();
+    for (int i = 0; i < points; i++) {
+      final angle = i * math.pi * 2 / points;
+      final r = radius * (.78 + ((i * 17 + seed * 11) % 7) / 25);
+      final point = center + Offset(math.cos(angle) * r, math.sin(angle) * r);
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
+    }
+    path.close();
+    canvas.drawPath(
+        path, Paint()..color = const Color(0xFF111827).withValues(alpha: .85));
+    canvas.drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1
+          ..color = const Color(0xFF8794A7).withValues(alpha: .22));
+    canvas.drawCircle(
+        center + Offset(-radius * .2, -radius * .15),
+        radius * .16,
+        Paint()..color = const Color(0xFF7B8797).withValues(alpha: .18));
   }
 
   @override
