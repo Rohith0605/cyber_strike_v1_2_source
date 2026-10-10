@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Strike | 10-page Project Report</title>
+<style>
+@page{size:A4 portrait;margin:0}*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:#172338;background:#e9edf4}
+.page{width:210mm;height:297mm;position:relative;margin:0 auto 8mm;padding:16mm 16mm 19mm;overflow:hidden;background:#fff;break-after:page;page-break-after:always}.page:last-child{break-after:auto;page-break-after:auto}
+.topline{color:#007e91;font-size:8pt;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding-bottom:3.5mm;border-bottom:1px solid #dbe4ed}
+h1{font-size:25pt;line-height:1.12;margin:8mm 0 4mm;color:#101b33}h2{font-size:14pt;line-height:1.2;color:#073c57;margin:5mm 0 2mm}h3{font-size:10pt;margin:3mm 0 1.5mm;color:#0b7285}
+p,li{font-size:9.2pt;line-height:1.42}p{margin:0 0 2.6mm}ul,ol{margin:1mm 0 2.5mm;padding-left:6mm}li{margin:0 0 1mm}
+.small{font-size:7.8pt;color:#58677b}.kicker{color:#e044a0;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:9pt}
+.rule{height:2px;width:25mm;background:linear-gradient(90deg,#00bfd3,#ec48a4);margin:3mm 0 5mm}
+.callout{border-left:3px solid #00a3b8;background:#f0f8fb;padding:3mm 4mm;margin:3mm 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin:3mm 0}.card{border:1px solid #d9e4ee;border-radius:2mm;padding:3mm;background:#fbfdff}.card strong{color:#083d58;display:block;font-size:9.5pt;margin-bottom:1mm}
+table{width:100%;border-collapse:collapse;margin:2.5mm 0 3mm;font-size:8pt}th{background:#10243b;color:white;text-align:left;padding:2mm}td{padding:1.8mm 2mm;border-bottom:1px solid #dce5ee;vertical-align:top}tr:nth-child(even) td{background:#f5f8fb}
+code,pre{font-family:Consolas,monospace;font-size:7.8pt}pre{white-space:pre-wrap;line-height:1.32;background:#101b2d;color:#e4f5ff;padding:3mm;border-radius:2mm}
+.footer{position:absolute;bottom:6.5mm;left:16mm;right:16mm;border-top:1px solid #dbe4ed;padding-top:2mm;display:flex;justify-content:space-between;color:#66768a;font-size:7.8pt;letter-spacing:.3px}
+.hero{background:linear-gradient(145deg,#071427 0%,#102743 60%,#17283e 100%);color:white}.hero .topline{border-color:#31516c;color:#6be9f3}.hero h1{color:white;font-size:42pt;margin-top:18mm}.hero p{color:#dae7f5;font-size:12pt;max-width:145mm}.hero .footer{border-color:#31516c;color:#a9c0d5}.hero .orb{position:absolute;width:68mm;height:68mm;border:1px solid #00bfd355;border-radius:50%;right:-12mm;top:26mm;box-shadow:0 0 0 12mm #00bfd30b,0 0 0 25mm #ec48a40b}.hero .hero-block{margin-top:13mm;border:1px solid #42627d;background:#10243bc9;padding:5mm;border-radius:3mm;max-width:145mm}.hero .hero-block p{font-size:9pt;margin:0 0 1.5mm}.index-table td:first-child{width:83%}.index-table td:last-child{width:17%;text-align:right;font-weight:700;color:#007f93;white-space:nowrap}
+@media screen{.page{box-shadow:0 4mm 12mm #14203322}}
+</style>
+</head>
+<body>
+<section class="page hero" data-document-role="page" data-label="Cover">
+<div class="orb"></div><div class="topline">Software Project Report • Flutter / Dart</div><div class="kicker" style="margin-top:17mm;color:#ff80c7">Interactive Web Game</div>
+<h1>CYBER<br>STRIKE</h1><div class="rule"></div><p>Project Documentation</p><p>A browser-playable sci-fi space shooter built with Flutter and Dart.</p>
+<div class="hero-block"><p><strong>PROJECT PROFILE</strong></p><p>Platform: Web browser</p><p>Rendering: CustomPainter / Canvas</p><p>Source control: GitHub</p><p>Hosting: GitHub Pages</p></div>
+<div style="position:absolute;bottom:32mm;left:16mm;right:16mm"><p style="font-size:8pt;color:#a9c0d5">LIVE WEBSITE</p><p style="font-size:9pt;color:#6be9f3">https://rohith0605.github.io/cyber_strike_v1_2_source/</p><p class="small" style="color:#b6c8da">Academic project report • 10-page edition</p></div>
+<div class="footer"><span>CYBER STRIKE • PROJECT DOCUMENTATION</span><span style="color:#6be9f3">PAGE 1 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="Index / Table of Contents">
+<div class="topline">Cyber Strike / Project Documentation</div><h1>Index</h1><div class="rule"></div><p class="small">Table of contents • Page numbers include the cover page.</p>
+<table class="index-table"><thead><tr><th>Section / Heading</th><th>Page</th></tr></thead><tbody>
+<tr><td>Cover — Cyber Strike</td><td>1</td></tr><tr><td>Index / Table of Contents</td><td>2</td></tr>
+<tr><td>1. Abstract, Introduction &amp; Objectives</td><td>3</td></tr><tr><td>2. Technology Stack &amp; Features</td><td>4</td></tr>
+<tr><td>3. Gameplay &amp; Controls</td><td>5</td></tr><tr><td>4. Level Progression, Enemy Classes &amp; Power-Ups</td><td>6</td></tr>
+<tr><td>5. System Architecture &amp; Game Loop</td><td>7</td></tr><tr><td>6. Collision Logic &amp; Visual Design</td><td>8</td></tr>
+<tr><td>7. Repository Structure, Windows Setup &amp; Deployment</td><td>9</td></tr><tr><td>8. Testing Checklist, Limitations, Future Work, Conclusion &amp; References</td><td>10</td></tr>
+</tbody></table>
+<div class="callout"><strong>Report note</strong><p style="margin:1mm 0 0">The testing checklist records items to verify. It does not claim that tests have passed without execution evidence.</p></div>
+<div class="footer"><span>CYBER STRIKE • INDEX</span><span>PAGE 2 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="1. Abstract, Introduction and Objectives">
+<div class="topline">01 / Project Overview</div><h1>Abstract, Introduction &amp; Objectives</h1><div class="rule"></div>
+<h2>Abstract</h2><p>Cyber Strike is a browser-playable two-dimensional space shooter developed with Flutter and Dart. The player controls a spacecraft, automatically fires at approaching enemies, collects temporary weapon or shield upgrades, earns points, and advances through score-gated levels. The project combines custom canvas rendering with real-time state updates, keyboard and pointer input, collision detection, and a web deployment workflow.</p>
+<h2>Introduction</h2><p>Arcade games bring together continuous simulation, event handling, visual feedback, and clear rules. Cyber Strike explores these ideas through a neon sci-fi setting and a compact single-player experience. Flutter widgets provide the application shell and HUD, while CustomPainter and Canvas draw the ship, enemies, projectiles, pickups, particles, stars, and other scene effects.</p><p>Dart manages the game state and update logic. Targeting the web makes the game shareable by URL without requiring visitors to install a native app.</p>
+<h2>Project objectives</h2><ul><li>Build a playable 2D arcade game with Flutter and Dart.</li><li>Render a dynamic space scene using custom drawing.</li><li>Manage movement, projectiles, collision, scoring, health, and level transitions.</li><li>Support keyboard and mouse/touch movement.</li><li>Provide power-ups, pause/resume, restart, and game-over states.</li><li>Publish the compiled web version through a repeatable hosting workflow.</li></ul>
+<div class="callout"><strong>Project scope</strong><p style="margin:1mm 0 0">Cyber Strike is a single-player game. User accounts, online multiplayer, cloud saves, and remote leaderboards are not part of the documented implementation.</p></div>
+<div class="footer"><span>CYBER STRIKE • OVERVIEW</span><span>PAGE 3 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="2. Technology Stack and Features">
+<div class="topline">02 / Technology &amp; Scope</div><h1>Technology Stack &amp; Features</h1><div class="rule"></div>
+<h2>Technology stack</h2><table><thead><tr><th>Technology</th><th>Role in the project</th></tr></thead><tbody>
+<tr><td>Flutter</td><td>Application widgets, layout, theme, and web target.</td></tr><tr><td>Dart</td><td>Game state, entities, timing, collision, score, and controls.</td></tr><tr><td>CustomPainter / Canvas</td><td>Draws the animated 2D battlefield and its entities.</td></tr><tr><td>Timer</td><td>Schedules repeated game-state updates.</td></tr><tr><td>Keyboard APIs</td><td>Read key events and held-key movement.</td></tr><tr><td>GestureDetector</td><td>Reads pointer/touch drag movement.</td></tr><tr><td>Git / GitHub</td><td>Source control, change history, and repository hosting.</td></tr><tr><td>GitHub Actions / Pages</td><td>Builds the web release and hosts static output.</td></tr>
+</tbody></table>
+<h2>Main features</h2><div class="grid">
+<div class="card"><strong>Automatic combat</strong><p>Projectiles fire automatically while the game is running.</p></div>
+<div class="card"><strong>Scoring &amp; levels</strong><p>Defeating enemies adds points and can unlock higher levels.</p></div>
+<div class="card"><strong>Enemy variety</strong><p>Scout, Interceptor, Tank, and Phantom enemies have distinct visuals and health.</p></div>
+<div class="card"><strong>Power-ups</strong><p>Weapon upgrades and a temporary shield change the active run.</p></div>
+<div class="card"><strong>Input choices</strong><p>Keyboard movement plus mouse/touch drag movement.</p></div>
+<div class="card"><strong>Game states</strong><p>Start, pause, resume, restart, and game-over states.</p></div>
+</div>
+<h2>Visual feedback</h2><p>The scene uses a dark navy background with cyan, magenta, violet, orange, and gold accents. Moving stars, subtle grid lines, glowing projectiles, particles, impact effects, and HUD notices help communicate movement and combat events. Visual effects are designed to complement gameplay information rather than replace it.</p>
+<div class="footer"><span>CYBER STRIKE • TECHNOLOGY &amp; FEATURES</span><span>PAGE 4 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="3. Gameplay and Controls">
+<div class="topline">03 / Player Guide</div><h1>Gameplay &amp; Controls</h1><div class="rule"></div>
+<h2>Gameplay flow</h2><ol><li>Start a run from the opening screen.</li><li>Move the spacecraft around the playfield to avoid direct contact with enemy units.</li><li>Allow automatic firing to engage enemies as they approach.</li><li>Destroy enemies to collect points and progress through level thresholds.</li><li>Move into falling pickups to collect weapon or shield upgrades.</li><li>Pause or resume when needed; restart to begin a new run after game over.</li></ol>
+<h2>Control reference</h2><table><thead><tr><th>Input</th><th>Action</th></tr></thead><tbody>
+<tr><td>W / Up Arrow</td><td>Move upward.</td></tr><tr><td>A / Left Arrow</td><td>Move left.</td></tr><tr><td>S / Down Arrow</td><td>Move downward.</td></tr><tr><td>D / Right Arrow</td><td>Move right.</td></tr><tr><td>P or Esc</td><td>Pause or resume.</td></tr><tr><td>R</td><td>Restart the run.</td></tr><tr><td>Enter or Space</td><td>Start from menu or resume when paused.</td></tr><tr><td>Mouse / touch drag</td><td>Move the ship horizontally.</td></tr><tr><td>Automatic</td><td>Weapon firing during active play.</td></tr></tbody></table>
+<h2>Health and survival</h2><p>The player starts with three health points. Health is intended to decrease only on direct enemy-to-ship collision, subject to the active shield or damage grace period. An enemy leaving the bottom of the playfield does not itself cause damage.</p>
+<h2>Keyboard focus</h2><p>For browser keyboard input to work reliably, the game area needs focus. If controls do not respond, click within the game area and try again. Test keyboard and pointer input separately on the target browser before presenting the project.</p>
+<div class="callout"><strong>Player tip</strong><p style="margin:1mm 0 0">Keep moving, watch the HUD for level changes, and collect power-ups when it is safe to cross their path.</p></div>
+<div class="footer"><span>CYBER STRIKE • GAMEPLAY</span><span>PAGE 5 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="4. Levels, Enemy Classes and Power-Ups">
+<div class="topline">04 / Progression Systems</div><h1>Levels, Enemies &amp; Power-Ups</h1><div class="rule"></div>
+<h2>Level progression</h2><table><thead><tr><th>Level</th><th>Score threshold</th><th>Enemy mix / scene</th></tr></thead><tbody><tr><td>1</td><td>0–19</td><td>Scout units.</td></tr><tr><td>2</td><td>20–49</td><td>Scouts and Interceptors.</td></tr><tr><td>3</td><td>50–99</td><td>Scouts, Interceptors, Tanks; asteroid decoration appears.</td></tr><tr><td>4</td><td>100+</td><td>Phantoms, Tanks, and Interceptors; later-level atmosphere.</td></tr></tbody></table>
+<h2>Enemy classes and scoring</h2><table><thead><tr><th>Enemy</th><th>Health</th><th>Score on defeat</th></tr></thead><tbody><tr><td>Scout</td><td>1</td><td>10</td></tr><tr><td>Interceptor</td><td>2</td><td>15</td></tr><tr><td>Tank</td><td>4</td><td>25</td></tr><tr><td>Phantom</td><td>3</td><td>30</td></tr></tbody></table>
+<p>Different shapes and colours help distinguish units. Enemy durability and score reward vary by type, encouraging the player to adapt as later classes appear.</p>
+<h2>Power-ups</h2><div class="grid">
+<div class="card"><strong>Twin Lasers</strong><p>Fires two parallel projectiles per weapon cycle. Available from Level 2.</p></div>
+<div class="card"><strong>Spread Shot</strong><p>Fires a three-projectile spread. Available from Level 3.</p></div>
+<div class="card"><strong>Overdrive Cannon</strong><p>Fires a five-projectile pattern with a faster cooldown. Available from Level 4.</p></div>
+<div class="card"><strong>Shield</strong><p>Temporarily protects the ship from collision damage. Available at every level.</p></div>
+</div>
+<p>Power-ups fall into the playfield and activate when collected. Weapon boosts have a limited duration and then return to the base weapon. Shield and weapon timers are updated by the game loop.</p>
+<div class="footer"><span>CYBER STRIKE • LEVELS &amp; POWER-UPS</span><span>PAGE 6 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="5. System Architecture and Game Loop">
+<div class="topline">05 / Code Design</div><h1>Architecture &amp; Game Loop</h1><div class="rule"></div>
+<h2>High-level architecture</h2><div class="card"><strong>Application shell — CyberStrikeApp</strong><p>Sets the MaterialApp, dark theme, colour scheme, and opens the game screen.</p></div><div style="text-align:center;color:#00a3b8;font-size:15pt">↓</div>
+<div class="card"><strong>Game controller — GameScreen / _GameScreenState</strong><p>Owns the timer, player position, score, level, health, keyboard focus, active entities, and run-state flags.</p></div><div style="text-align:center;color:#00a3b8;font-size:15pt">↓</div>
+<div class="grid"><div class="card"><strong>Entity models</strong><p>Enemy, Bullet, Pickup, and Particle hold each object's state.</p></div><div class="card"><strong>Input handlers</strong><p>Keyboard and drag handlers translate user input into movement or state changes.</p></div></div><div style="text-align:center;color:#00a3b8;font-size:15pt">↓</div><div class="card"><strong>Simulation &amp; rendering</strong><p>The update method advances state; GamePainter draws the resulting scene using Canvas.</p></div>
+<h2>Core components</h2><table><thead><tr><th>Component</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>Enemy</code></td><td>Position, kind, speed, radius, health, and lifecycle.</td></tr><tr><td><code>Bullet</code></td><td>Projectile position, velocity, radius, and cleanup.</td></tr><tr><td><code>Pickup</code></td><td>Pickup kind, position, movement, and spin.</td></tr><tr><td><code>Particle</code></td><td>Position, velocity, colour, and lifetime.</td></tr><tr><td><code>GamePainter</code></td><td>Paints scene, entities, effects, and player ship.</td></tr></tbody></table>
+<h2>Update loop</h2><p>A periodic timer calls the game update method at intervals near 16 milliseconds. Each active tick applies movement, timers, enemy and pickup spawning, projectile and enemy movement, collision checks, scoring, cleanup, level updates, and the game-over condition. Rendering then reflects the current state.</p>
+<p class="small">A timer interval near 16 ms is not a guarantee of a steady 60 frames per second; browser throttling and device performance may affect the effective rate.</p>
+<div class="footer"><span>CYBER STRIKE • ARCHITECTURE</span><span>PAGE 7 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="6. Collision Logic and Visual Design">
+<div class="topline">06 / Rules &amp; Interface</div><h1>Collision Logic &amp; Visual Design</h1><div class="rule"></div>
+<h2>Collision detection</h2><p>A bullet hits an enemy when the distance between their centres is less than the sum of their collision radii. The bullet is removed, enemy health is reduced, and the enemy is removed with its score award when health reaches zero.</p><pre>distance(bullet, enemy) &lt; bullet.radius + enemy.radius</pre>
+<h2>Health and shield rule</h2><p>Direct enemy-to-ship contact is the condition for player damage. If a shield is active, it absorbs the collision. Otherwise, a short damage cooldown prevents repeated rapid damage. Enemies that leave the bottom of the screen are cleaned up without reducing player health.</p><h2>Game-over state</h2><p>When health reaches zero, the running state stops and the game-over state is displayed. Restart resets the run-related state and clears active entities.</p>
+<h2>Visual design</h2><p>Cyber Strike uses a dark navy space scene with bright cyan, magenta, violet, orange, and gold accents. Custom paths create the spacecraft and enemy silhouettes. Glowing bullets, star trails, gradient nebulae, perspective grid lines, particles, and brief screen shake provide motion and impact feedback.</p>
+<div class="grid"><div class="card"><strong>Visual hierarchy</strong><p>The HUD separates score, health, level, and notices from the active battlefield.</p></div><div class="card"><strong>Object readability</strong><p>Enemy colour, shape, and health bars distinguish threats; pickup symbols identify upgrades.</p></div><div class="card"><strong>Feedback</strong><p>Particle bursts show hits and defeats; status text announces upgrades and level changes.</p></div><div class="card"><strong>Atmosphere</strong><p>Background colour shifts and later-level asteroids give a sense of progression.</p></div></div>
+<h2>Verification considerations</h2><p>Collision radii and visual overlap are approximations, so test edge cases with different window sizes. Confirm shield absorption, grace-period behavior, zero-health game over, and the no-damage rule for off-screen enemies.</p>
+<div class="footer"><span>CYBER STRIKE • COLLISIONS &amp; DESIGN</span><span>PAGE 8 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="7. Repository, Windows Setup and Deployment">
+<div class="topline">07 / Developer &amp; Release Guide</div><h1>Repository, Setup &amp; Deployment</h1><div class="rule"></div>
+<h2>Repository structure</h2><pre>cyber_strike_v1_2_source/
+├── .github/workflows/deploy.yml
+├── lib/main.dart
+├── web/index.html
+├── pubspec.yaml
+├── pubspec.lock
+├── analysis_options.yaml
+├── .gitignore
+└── README.md</pre>
+<p><code>lib/main.dart</code> contains the game implementation. <code>web/index.html</code> is the Flutter web entry template. <code>pubspec.yaml</code> defines metadata and packages. The workflow defines the cloud build and Pages deployment.</p>
+<h2>Run locally on Windows</h2><p><strong>Prerequisites:</strong> Flutter stable SDK in PATH, Git, a code editor, and Chrome.</p><ol><li>Open PowerShell and verify: <code>flutter --version</code> and <code>flutter doctor</code>.</li><li>Clone the repository and enter it:</li></ol><pre>git clone https://github.com/Rohith0605/cyber_strike_v1_2_source.git
+cd cyber_strike_v1_2_source</pre><ol start="3"><li>Install packages and run the app:</li></ol><pre>flutter pub get
+flutter run -d chrome</pre>
+<h2>Build and publish</h2><p>Flutter compiles the Dart project into static files for the browser. The release output is generated under <code>build/web</code>.</p><pre>flutter build web --release --base-href "/cyber_strike_v1_2_source/"</pre><p>The GitHub Actions workflow checks out the source, installs Flutter, gets dependencies, builds the web release, uploads <code>build/web</code> as a Pages artifact, then deploys it. In Settings → Pages, select <strong>GitHub Actions</strong> as the publishing source.</p>
+<div class="callout"><strong>Live game</strong><p style="margin:1mm 0 0">https://rohith0605.github.io/cyber_strike_v1_2_source/</p><p style="margin:1mm 0 0"><strong>Source:</strong> github.com/Rohith0605/cyber_strike_v1_2_source</p></div>
+<div class="footer"><span>CYBER STRIKE • SETUP &amp; DEPLOYMENT</span><span>PAGE 9 / 10</span></div></section>
+
+<section class="page" data-document-role="page" data-label="8. Testing, Limitations, Future Work, Conclusion and References">
+<div class="topline">08 / Quality &amp; Closing</div><h1>Testing, Future Work &amp; Conclusion</h1><div class="rule"></div>
+<h2>Testing checklist</h2><table><thead><tr><th>Area</th><th>Verification</th><th>Status</th></tr></thead><tbody>
+<tr><td>Startup</td><td>Open the URL; start with Enter / Space.</td><td>To test</td></tr><tr><td>Controls</td><td>Check WASD, arrows, and pointer dragging.</td><td>To test</td></tr><tr><td>Combat</td><td>Confirm bullets hit enemies and score is awarded correctly.</td><td>To test</td></tr><tr><td>Levels</td><td>Reach thresholds 20, 50, and 100.</td><td>To test</td></tr><tr><td>Pickups</td><td>Test each weapon upgrade and shield.</td><td>To test</td></tr><tr><td>Health</td><td>Confirm direct collision damage and off-screen cleanup.</td><td>To test</td></tr><tr><td>States</td><td>Test pause, resume, restart, and game over.</td><td>To test</td></tr><tr><td>Release</td><td>Check Actions result, live URL, and browser console.</td><td>To test</td></tr></tbody></table>
+<h2>Known limitations</h2><ul><li>Game state is held in memory; refreshing starts a new session.</li><li>The current project does not document accounts, cloud saves, or online leaderboards.</li><li>Keyboard focus, touch behavior, and small-screen layout should be tested on target devices.</li><li>Timer cadence and rendering can vary with browser throttling or device performance.</li></ul>
+<h2>Future enhancements</h2><p>Possible improvements include audio controls, boss encounters, additional missions, saved high scores, stronger automated tests, responsive touch input, accessibility settings, and performance profiling.</p>
+<h2>Conclusion</h2><p>Cyber Strike demonstrates how Flutter and Dart can support a browser-playable arcade game through custom 2D rendering, real-time state updates, input handling, collision rules, score-driven levels, and temporary power-ups. Reliable testing and release validation should precede larger gameplay expansions.</p>
+<h2>References</h2><p class="small">Project repository: https://github.com/Rohith0605/cyber_strike_v1_2_source<br>Live website: https://rohith0605.github.io/cyber_strike_v1_2_source/<br>Flutter: https://docs.flutter.dev/ • Dart: https://dart.dev/guides<br>CustomPainter API: https://api.flutter.dev/flutter/rendering/CustomPainter-class.html<br>GitHub Actions: https://docs.github.com/en/actions • GitHub Pages: https://docs.github.com/en/pages</p>
+<div class="footer"><span>CYBER STRIKE • FINAL NOTES</span><span>PAGE 10 / 10</span></div></section>
+</body></html>
